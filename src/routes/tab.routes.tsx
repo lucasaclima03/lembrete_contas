@@ -4,6 +4,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import Home from '../screens/Home';
+import Contas from '../screens/Contas';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Tab = createBottomTabNavigator();
@@ -21,7 +22,12 @@ export function StackRoutes(){
 function DrawerRoutes(){
     return (
         <Drawer.Navigator>
-            <Drawer.Screen name='drawer' component={Home}  />
+            <Drawer.Screen name='Perfil' component={Home}  />
+            <Drawer.Screen name='Categorias' component={Home}  />
+            <Drawer.Screen name='Configurações' component={Home}  />
+            <Drawer.Screen name='Armazenamento' component={Home}  />
+            <Drawer.Screen name='Ajuda' component={Home}  />
+            <Drawer.Screen name='Quem Somos' component={Home}  />
         </Drawer.Navigator>
 
     )
@@ -34,8 +40,8 @@ export function TabRoutes(){
             <Tab.Screen name='Home' component={DrawerRoutes} options={{ headerShown: false, tabBarIcon: ({color, size})  => (
                 <MaterialIcons name="home" color={color} size={size} />
             )}} />
-            <Tab.Screen name='Conteúdos' component={Home} options={{headerShown: false, tabBarIcon: ({color, size}) => (
-                <MaterialIcons name="list" color={color} size={size} />
+            <Tab.Screen name='Conteúdos' component={Contas} options={{headerShown: false, tabBarIcon: ({color, size}) => (
+                <MaterialIcons name="add-box" color={color} size={size} />
             )}} />
             <Tab.Screen name='Favoritos' component={DrawerRoutes} options={{headerShown: false, tabBarIcon: ({color, size}) => (
                 <MaterialIcons name="favorite" color={color} size={size} />
