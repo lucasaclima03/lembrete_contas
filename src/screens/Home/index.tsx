@@ -1,5 +1,6 @@
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import 'react-native-gesture-handler';
 
 export default function Home() {
   return (
