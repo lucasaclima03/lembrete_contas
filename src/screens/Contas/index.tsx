@@ -16,7 +16,9 @@ export default function Contas() {
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       title: '',
-      description: ''
+      description: '',
+      amount: '',
+      reminderDate: Date.now()
     }
   });
   const onSubmit = data => console.log(data);
@@ -125,7 +127,7 @@ export default function Contas() {
                 value={value}
               />
             )}
-            name="description"
+            name="amount"
             />
             <Text style={styles.text}>Escolha uma data para te lembrar</Text>
             <View style={styles.datePickerArea} >
@@ -135,9 +137,9 @@ export default function Contas() {
                 maxLength: 100,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <DatePicker style={styles.datePicker} locale='pt' date={date} onDateChange={setDate} />
+                  <DatePicker style={styles.datePicker} locale='pt' date={date} onDateChange={onChange} />
                 )}
-                name="description"
+                name="reminderDate"
               />
             </View>          
 
@@ -187,22 +189,18 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   submitFormButton: {
-    backgroundColor: 'pink',
+    backgroundColor: '#8B008B',
     alignItems: 'center',
     alignSelf: 'center',    
     width: '50%',
     height: 50,
     borderWidth: 1,
     marginVertical: 15,
-    borderRadius: 12
+    borderRadius: 12,
+    justifyContent: 'center'
   },
-  submitFormButtonText: {    
-    flex: 1,    
-    fontSize: 20,
-    
-    
-    // justifyContent: 'center',
-    // width: '100%',
-    // height: '100%'    
+  submitFormButtonText: {        
+    fontSize: 18,
+    color: 'white'    
   }
 });
