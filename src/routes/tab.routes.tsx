@@ -22,7 +22,7 @@ export function StackRoutes(){
 function DrawerRoutes(){
     return (
         <Drawer.Navigator>
-            <Drawer.Screen name='Perfil' component={Home}  />
+            <Drawer.Screen name='Minhas contas' component={Home}  />
             <Drawer.Screen name='Categorias' component={Home}  />
             <Drawer.Screen name='Configurações' component={Home}  />
             <Drawer.Screen name='Armazenamento' component={Home}  />
