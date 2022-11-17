@@ -1,17 +1,25 @@
 import React, {useState} from 'react';
-import {Button, SafeAreaView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Button, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 
 import DatePicker from 'react-native-date-picker';
 
 import CalendarPicker from 'react-native-calendar-picker';
 import 'react-native-gesture-handler';
 
-
 import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native'
 import { useNotification } from '../../services/notifee';
 import { ScrollView } from 'react-native-gesture-handler';
+import {useForm, Controller} from 'react-hook-form';
+import { buildUnavailableHoursBlocks } from 'react-native-calendars/src/timeline/Packer';
 
 export default function Contas() {
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {
+      title: '',
+      description: ''
+    }
+  });
+  const onSubmit = data => console.log(data);
 
   const {
     displayNotification,
@@ -68,33 +76,81 @@ export default function Contas() {
   );  
 
   }
-
-  console.log('texto ' + title)  
-
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container} >
       <ScrollView>
-      <View style={styles.container} >
-        <Text style={styles.text}>Registre sua conta a pagar</Text>
-        <TextInput style={styles.input} placeholder='Nome da conta' onChangeText={(text) => setTitle(text)} />
-        <Text style={styles.text}>Escolha uma data para te lembrar</Text>        
-        <View>
-        {/* <CalendarPicker        
-            onDateChange={setSelectedStartDate}
-        />         */}
-        <Text>Data selecionada {startDate} </Text>
+        <View style={styles.contentArea} >
+          <Text style={styles.text}>Registre sua conta a pagar</Text>
+          <Controller 
+            control={control}
+            rules={{required: true}}
+            render={({field: {onChange, onBlur, value} }) => (            
+              <TextInput
+              style={styles.input}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}            
+              />
+            )}            
+            name="title"       
+          />
+          {errors.title && <Text>This is required</Text> }
+          <Text style={styles.text}>Descrição (opcional)</Text>
+          <Controller
+            control={control}
+            rules={{
+            maxLength: 100,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="description"
+            />
+            <Text style={styles.text}>Valor</Text>
+            <Controller
+            control={control}
+            rules={{
+            maxLength: 100,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+            name="description"
+            />
+            <Text style={styles.text}>Escolha uma data para te lembrar</Text>
+            <View style={styles.datePickerArea} >
+              <Controller          
+                control={control}
+                rules={{
+                maxLength: 100,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <DatePicker style={styles.datePicker} locale='pt' date={date} onDateChange={setDate} />
+                )}
+                name="description"
+              />
+            </View>          
 
-        </View>
-        <View>
+            <TouchableOpacity style={styles.submitFormButton} onPress={handleSubmit(onSubmit)} >
+              <Text style={styles.submitFormButtonText} > Salvar </Text>
+            </TouchableOpacity>            
             
+          <View style={styles.container} >            
+            <Button title='ver triggers' onPress={()=> notifee.getTriggerNotifications().then(ids => console.log('All trigger notifications: ', ids)) } />
+            <Button title='marcar notificacao' onPress={()=> marcarNotificacao(title) } />                    
+            <Button title="Cancel All Notifications" onPress={cancelAllNotifications} />
+          </View>
         </View>
-        <Button title='ver triggers' onPress={()=> notifee.getTriggerNotifications().then(ids => console.log('All trigger notifications: ', ids)) } />
-        <Button title='marcar notificacao' onPress={()=> marcarNotificacao(title) } />
-        <Button title="Display Notification" onPress={handleDisplayNotification} />
-        <Button title="Create Trigger Notification" onPress={handleCreateTriggerNotification} />
-        <Button title="Cancel All Notifications" onPress={cancelAllNotifications} />
-        <DatePicker locale='pt' date={date} onDateChange={setDate} />
-      </View>
 
       </ScrollView>
     </SafeAreaView>
@@ -102,21 +158,51 @@ export default function Contas() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    // alignItems: 'center',
-    justifyContent: 'center',    
+  container: {    
+    backgroundColor: 'white'
+  },
+  contentArea: {
+    marginTop: 20
   },
   text: {
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: 'bold',
     alignContent: 'flex-start',
-    marginLeft: 10,
-    marginBottom: 10,
-    marginTop: 15
+    marginLeft: '8%',    
+    marginTop: 10,
+    color: 'black'
   },
-  input: {
-    borderWidth: 1,
+  datePicker: {
+    marginVertical: 25,         
+  },
+  datePickerArea: {
+    alignItems: 'center',      
+  },
+  input: {    
     padding: 5,
-    marginHorizontal: 10
+    marginLeft: '8%',
+    marginHorizontal: 10,
+    borderBottomWidth: 1,
+    width: '80%',
+    marginBottom: 5
+  },
+  submitFormButton: {
+    backgroundColor: 'pink',
+    alignItems: 'center',
+    alignSelf: 'center',    
+    width: '50%',
+    height: 50,
+    borderWidth: 1,
+    marginVertical: 15,
+    borderRadius: 12
+  },
+  submitFormButtonText: {    
+    flex: 1,    
+    fontSize: 20,
+    
+    
+    // justifyContent: 'center',
+    // width: '100%',
+    // height: '100%'    
   }
 });
