@@ -5,35 +5,43 @@ export const reminderSchema = tableSchema({
     columns: [        
         {
             name: 'username',
-            type: 'string'
+            type: 'string',
+            isOptional: true
         },
         {
             name: 'email',
-            type: 'string'
+            type: 'string',
+            isOptional: true
         },
         {
             name: 'title',
-            type: 'string'
+            type: 'string',
+            isOptional: true
         },
         {
             name: 'description',
-            type: 'string'
+            type: 'string',
+            isOptional: true
         },
         {
             name: 'amount',
-            type: 'number'
+            type: 'number',
+            isOptional: true
         },
         {
             name: 'reminder_date',
-            type: 'string'
+            type: 'string',
+            isOptional: true
         },
         {
             name: 'due_date',
-            type: 'string'
+            type: 'string',
+            isOptional: true
         },
         {
             name: 'payment_proof',
-            type: 'string'
+            type: 'string',
+            isOptional: true
         },
         
     ]

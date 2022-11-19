@@ -1,4 +1,5 @@
 import {
+  Alert,
   FlatList,
   SafeAreaView,
   StyleSheet,
@@ -8,93 +9,150 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import 'react-native-gesture-handler';
-
-
+import React, {useState, useEffect, useCallback} from 'react';
+import {database} from '../../database';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function Home() {
-  const data = [
-    {id:1, day:1, month: 'Sep'}, 
-    {id:2, day:2, month: 'Jan'}, 
-    {id:3, day:3, month: 'Aug'}, 
-    {id:4, day:4, month: 'Dec'}, 
-    {id:5, day:5, month: 'Jul'}, 
-    {id:6, day:6, month: 'Oct'}, 
-    {id:7, day:7, month: 'Sep'},
-    {id:8, day:8, month: 'Jan'},
-    {id:9, day:9, month: 'May'},
-  ]
+  useFocusEffect(
+    useCallback(() => {
+      getReminders();
+    }, []),
+  );
+
+  const [savedReminders, setSavedReminders] = useState();
+
+  const getReminders = async () => {
+    const remindersCollection = database.get('reminder');
+    const response = await remindersCollection.query().fetch();
+    setSavedReminders(response);
+  };
+
+  async function removeReminder(reminder){
+    Alert.alert("Atenção", "Deseja realmente remover o item?",[
+        {
+          text: "Cancel"
+        },
+        {
+          text: "Ok",
+          onPress: async() => await database.write( async() => {
+            await reminder.destroyPermanently();
+            getReminders();            
+          })
+        }
+    ])
+  
+  
+} 
+
+  function formatDate(date){
+    const newDate = new Date(date)
+    // const result = date.
+    const day = newDate.getDay()
+    const month = newDate.getMonth()
+    const formatedDate = `${day}/${month}   `    
+    return formatedDate
+  }
+  function returnDay(date){
+    const newDate = new Date(date)
+    const day = newDate.getDay()    
+    return day
+  }
+  function returnMonth(date){
+    const newDate = new Date(date)
+    const month = newDate.getMonth()
+    return month
+  }
 
 
   return (
-
     <SafeAreaView>
-      <FlatList 
+      <FlatList
         style={styles.billsList}
-        data={data}        
+        data={savedReminders}
         renderItem={({item}) => {
           return (
-            <TouchableOpacity>
+            <TouchableOpacity onLongPress={()=> removeReminder(item) } >
               <View style={styles.container}>
                 <View style={styles.containerDate}>
-                  <Text style={styles.containerDay}>{item.day}</Text>
-                  <Text style={styles.containerMonth}>{item.month}</Text>
+                  <Text style={styles.containerDay}>{returnDay(item.due_date)} </Text>
+                  <Text style={styles.containerMonth}>{returnMonth(item.due_date)} </Text>
                 </View>
                 <View style={styles.containerContent}>
-                  <Text style={styles.title}>Unimed plano</Text>
-                  <Text style={styles.description}>Pagar boleto adiantado desconto</Text>
+                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.description}>{item.description}</Text>
+                  <Text style={styles.description}>vencimento em: {item.due_date ? formatDate(item.due_date) : 'sem data cadastrada' } </Text>
                 </View>
               </View>
             </TouchableOpacity>
-          )
-        } }
-
+          );
+        }}
       />
-    </SafeAreaView>    
-      
-    
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   billsList: {
-    marginTop: 20
+    marginTop: 20,
   },
   container: {
-    padding:10,
-    marginTop:5,
-    marginBottom:5,
+    padding: 10,
+    marginTop: 5,
+    marginBottom: 5,
     flexDirection: 'row',
   },
   containerDate: {
-    flexDirection: 'column',
+    flexDirection: 'column',    
+    // paddingLeft: 5,
+    alignContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
+    width: 50,    
+    // width: '100%'
   },
   containerDay: {
-    fontSize:50,
-    color: "#0099FF",
-    fontWeight: "600",
+    fontSize: 30,
+    color: 'white',
+    fontWeight: '600',
+    alignSelf: 'center',
+    alignContent: 'center',
+    backgroundColor: '#8B008B',
+    width: '100%',    
+    textAlign: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',    
+    paddingLeft: 5   
+
   },
   containerMonth: {
-    fontSize:16,
-    color: "#0099FF",
-    fontWeight: "600",
+    fontSize: 30,
+    color: 'white',
+    fontWeight: '600',
+    // alignSelf: 'center',
+    backgroundColor: '#8B008B',
+    textAlign: 'center',
+    width: '100%',   
+    paddingLeft: 5   
+    
   },
   containerContent: {
-    flex:1,
+    flex: 1,
     flexDirection: 'column',
     alignItems: 'flex-start',
-    marginLeft:10,
+    marginLeft: 10,
     backgroundColor: '#FFFFFF',
-    padding:10,
-    borderRadius:10
+    padding: 10,
+    borderRadius: 10,
   },
   description: {
-    fontSize:15,
-    color: "#646464",
+    fontSize: 15,
+    color: '#646464',
   },
   title: {
-    fontSize:16,
-    color:"#151515",
-
+    fontSize: 16,
+    color: '#151515',
   },
   card: {
     alignItems: 'center',

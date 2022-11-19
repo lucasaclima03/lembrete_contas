@@ -5,7 +5,7 @@ export class ReminderModel extends Model {
     static table = 'reminder'    
 
     @field('username')
-    username: string
+    username: string    
 
     @field('email')
     email: string

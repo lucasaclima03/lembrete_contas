@@ -10,6 +10,6 @@ const adapter = new SQLiteAdapter({
 
 export const database = new Database({
     adapter,
-    modelClasses: [ContentModel]
+    modelClasses: [ReminderModel]
 })
 

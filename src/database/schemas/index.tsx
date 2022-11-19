@@ -4,6 +4,6 @@ import {reminderSchema} from './ReminderSchema'
 
 export const schemas = appSchema({
     version: 1,
-    tables: [contentSchema]
+    tables: [reminderSchema]
 
 })
