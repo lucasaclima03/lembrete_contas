@@ -27,4 +27,7 @@ export class ReminderModel extends Model {
 
     @field('payment_proof')
     payment_proof: string 
+
+    @field('payd')
+    payd: number
 }

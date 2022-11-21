@@ -5,6 +5,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import Home from '../screens/Home';
 import Contas from '../screens/Contas';
+import PaydBills from '../screens/PaydBills';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Tab = createBottomTabNavigator();
@@ -29,7 +30,8 @@ function DrawerRoutes(){
                 drawerActiveTintColor: 'white',
                 drawerInactiveTintColor: 'white',
                 drawerLabelStyle: {
-                    fontSize: 18
+                    fontSize: 18,
+                    alignContent: 'center',
                 }
             }}
         >
@@ -54,7 +56,7 @@ export function TabRoutes(){
             <Tab.Screen name='Conteúdos' component={Contas} options={{headerShown: false, tabBarIcon: ({color, size}) => (
                 <MaterialIcons name="add-box" color={color} size={size} />
             )}} />
-            <Tab.Screen name='Favoritos' component={DrawerRoutes} options={{headerShown: false, tabBarIcon: ({color, size}) => (
+            <Tab.Screen name='Resumo' component={PaydBills} options={{headerShown: false, tabBarIcon: ({color, size}) => (
                 <MaterialIcons name="favorite" color={color} size={size} />
             )}} />                        
         </Tab.Navigator>

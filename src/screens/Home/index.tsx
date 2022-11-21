@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  Modal,
+  Pressable,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import 'react-native-gesture-handler';
@@ -16,6 +18,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {database} from '../../database';
 import {useFocusEffect} from '@react-navigation/native';
 import {ScrollView} from 'react-native-gesture-handler';
+import Dialog from './Dialog';
 
 export default function Home() {
   useFocusEffect(
@@ -25,6 +28,7 @@ export default function Home() {
   );
 
   const [savedReminders, setSavedReminders] = useState();
+  const [visible, setVisible] = useState(false);
 
   const getReminders = async () => {
     const remindersCollection = database.get('reminder');
@@ -33,12 +37,24 @@ export default function Home() {
   };
 
   async function removeReminder(reminder) {
-    Alert.alert('Atenção', 'Deseja realmente remover o item?', [
+    console.log(reminder);
+
+    Alert.alert('Atenção', 'Selecione uma das opções', [
       {
-        text: 'Cancel',
+        text: 'Cancelar',
       },
       {
-        text: 'Ok',
+        text: 'Marcar como pago',
+        onPress: async () => {
+          await database.write(async () => {
+            await reminder.update(reminder => {
+              reminder.payd = 1;
+            });
+          });
+        },
+      },
+      {
+        text: 'Apagar',
         onPress: async () =>
           await database.write(async () => {
             await reminder.destroyPermanently();
@@ -70,25 +86,28 @@ export default function Home() {
   function NearToDueDate() {
     const renderItem = ({item}) => {
       return (
-        <View style={styles.cardContainer} >          
-            <View style={styles.container}>
-              <View style={styles.containerDate}>
-                <Text style={styles.containerDay}>
-                  {returnDay(item.due_date)}{' '}
-                </Text>
-                <Text style={styles.containerMonth}>
-                  {returnMonth(item.due_date)}{' '}
-                </Text>
-              </View>
-              <View style={styles.containerContent}>
-                <TouchableOpacity activeOpacity={0.8} style={styles.moreIcon} onLongPress={() => removeReminder(item)}>
-                  <MaterialIcons name="more-vert" size={22} />
-                </TouchableOpacity>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.description}>{item.description}</Text>
-                {/* <Text style={styles.description}>vencimento em: {item.due_date ? formatDate(item.due_date) : 'sem data cadastrada' } </Text> */}
-              </View>
-            </View>          
+        <View style={styles.cardContainer}>
+          <View style={styles.container}>
+            <View style={styles.containerDate}>
+              <Text style={styles.containerDay}>
+                {returnDay(item.due_date)}{' '}
+              </Text>
+              <Text style={styles.containerMonth}>
+                {returnMonth(item.due_date)}{' '}
+              </Text>
+            </View>
+            <View style={styles.containerContent}>
+              <Pressable
+                // activeOpacity={0.8}
+                style={styles.moreIcon}
+                onPress={() => removeReminder(item)}>
+                <MaterialIcons name="more-vert" size={22} />
+              </Pressable>
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.title}>{item.id}</Text>
+              <Text style={styles.description}>{item.description}</Text>
+            </View>
+          </View>
         </View>
       );
     };
@@ -96,7 +115,7 @@ export default function Home() {
       <FlatList
         style={styles.billsList}
         data={savedReminders}
-        renderItem={renderItem}        
+        renderItem={renderItem}
       />
     );
   }
@@ -113,63 +132,61 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  moreIcon: {    
+  moreIcon: {
     alignSelf: 'flex-end',
   },
   containerList: {
-    height: '100%',    
+    height: '100%',
     width: '100%',
-    alignSelf: 'center'    
+    alignSelf: 'center',
   },
   billsList: {
     marginTop: 5,
-    marginBottom: 5,    
-  },  
-  cardContainer: {    
+    marginBottom: 5,
+  },
+  cardContainer: {
     alignSelf: 'center',
-    width: '100%'
+    width: '100%',
   },
   container: {
-    padding: 10,    
+    padding: 10,
     marginBottom: 5,
-    flexDirection: 'row',    
-    // alignSelf: 'center',    
+    flexDirection: 'row',
+    // alignSelf: 'center',
     height: 145,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
-  containerDate: {        
-    
-  },
+  containerDate: {},
   containerDay: {
     fontSize: 30,
     color: 'white',
-    fontWeight: '600',    
-    backgroundColor: '#8B008B',        
+    fontWeight: '600',
+    backgroundColor: '#8B008B',
     textAlign: 'center',
     textAlignVertical: 'center',
     borderBottomWidth: 1,
     borderBottomColor: 'black',
     paddingLeft: 5,
     borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,    
+    borderTopRightRadius: 10,
     height: '50%',
   },
   containerMonth: {
     fontSize: 30,
     color: 'white',
-    fontWeight: '600',    
+    fontWeight: '600',
     backgroundColor: '#8B008B',
     textAlign: 'center',
-    textAlignVertical: 'center',    
+    textAlignVertical: 'center',
     paddingLeft: 5,
     borderBottomRightRadius: 10,
     borderBottomLeftRadius: 10,
     shadowColor: 'black',
     shadowRadius: 8,
     elevation: 10,
-    height: '50%'
+    height: '50%',
   },
-  containerContent: {    
+  containerContent: {
     // alignItems: 'flex-start',
     marginLeft: 10,
     backgroundColor: '#FFFFFF',
@@ -179,7 +196,7 @@ const styles = StyleSheet.create({
     shadowColor: 'black',
     shadowRadius: 8,
     elevation: 10,
-    height: '100%',    
+    height: '100%',
   },
   description: {
     fontSize: 15,
@@ -193,9 +210,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     alignSelf: 'center',
-    borderWidth: 1,    
-    height: 120,    
-  },  
+    borderWidth: 1,
+    height: 120,
+  },
   textArea: {
     // width: 250,
     // height: 100,
@@ -234,5 +251,86 @@ const styles = StyleSheet.create({
     fontSize: 15,
     paddingTop: 5,
     marginLeft: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+
+  container2: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0, 0.2 )',
+  },
+  messageArea: {
+    width: '90%',
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: '#FFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'white',
+  },
+  title2: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  cancelButton: {
+    backgroundColor: 'pink',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+    padding: 5,
+    margin: 5,
+  },
+  confirmButton: {
+    backgroundColor: 'green',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5,
+    padding: 5,
+    margin: 5,
   },
 });

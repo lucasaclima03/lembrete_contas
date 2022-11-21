@@ -43,6 +43,11 @@ export const reminderSchema = tableSchema({
             type: 'string',
             isOptional: true
         },
+        {
+            name: 'payd',
+            type: 'number',
+            isOptional: true
+        },
         
     ]
 
