@@ -21,7 +21,18 @@ export function StackRoutes(){
 
 function DrawerRoutes(){
     return (
-        <Drawer.Navigator>
+        <Drawer.Navigator         
+            screenOptions={{
+                drawerStyle: {
+                    backgroundColor: '#4b8582',                                        
+                },
+                drawerActiveTintColor: 'white',
+                drawerInactiveTintColor: 'white',
+                drawerLabelStyle: {
+                    fontSize: 18
+                }
+            }}
+        >
             <Drawer.Screen name='Minhas contas' component={Home}  />
             <Drawer.Screen name='Categorias' component={Home}  />
             <Drawer.Screen name='Configurações' component={Home}  />
