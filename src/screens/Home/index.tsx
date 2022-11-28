@@ -19,6 +19,7 @@ import {database} from '../../database';
 import {useFocusEffect} from '@react-navigation/native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Dialog from './Dialog';
+import { Q } from '@nozbe/watermelondb'
 
 export default function Home() {
   useFocusEffect(
@@ -32,12 +33,13 @@ export default function Home() {
 
   const getReminders = async () => {
     const remindersCollection = database.get('reminder');
-    const response = await remindersCollection.query().fetch();
+    const response = await remindersCollection.query(
+      Q.where('payd', 0 )
+    ).fetch();
     setSavedReminders(response);
   };
 
-  async function removeReminder(reminder) {
-    console.log(reminder);
+  async function removeReminder(reminder) {    
 
     Alert.alert('Atenção', 'Selecione uma das opções', [
       {
@@ -51,7 +53,9 @@ export default function Home() {
               reminder.payd = 1;
             });
           });
+          getReminders()
         },
+        
       },
       {
         text: 'Apagar',
@@ -85,6 +89,7 @@ export default function Home() {
 
   function NearToDueDate() {
     const renderItem = ({item}) => {
+      console.log(item)
       return (
         <View style={styles.cardContainer}>
           <View style={styles.container}>
@@ -97,15 +102,14 @@ export default function Home() {
               </Text>
             </View>
             <View style={styles.containerContent}>
-              <Pressable
-                // activeOpacity={0.8}
+              <Pressable                
                 style={styles.moreIcon}
                 onPress={() => removeReminder(item)}>
                 <MaterialIcons name="more-vert" size={22} />
               </Pressable>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.title}>{item.id}</Text>
+              <Text style={styles.title}>{item.title}</Text>              
               <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.amount} > R$ {item.amount}</Text>
             </View>
           </View>
         </View>
@@ -124,14 +128,18 @@ export default function Home() {
     <SafeAreaView>
       <View style={styles.containerList}>
         <Text style={styles.nearToDueDateText}>Faturas</Text>
-        <NearToDueDate />
-        <Text style={styles.listFooter}>Ver todas</Text>
+        <NearToDueDate />        
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  amount: {
+    color: 'black',
+    marginLeft: -3,
+    marginTop: 15    
+  },
   moreIcon: {
     alignSelf: 'flex-end',
   },
@@ -153,7 +161,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     flexDirection: 'row',
     // alignSelf: 'center',
-    height: 145,
+    height: 160,
     justifyContent: 'center',
   },
   containerDate: {},
@@ -201,6 +209,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 15,
     color: '#646464',
+    // marginTop: 18
   },
   title: {
     fontSize: 16,

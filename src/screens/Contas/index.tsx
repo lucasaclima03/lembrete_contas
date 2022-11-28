@@ -61,8 +61,9 @@ export default function Contas() {
       .create(data => {
         data.title = reminderData.title;
         data.description = reminderData.description;
-        data.amount = reminderData.amount;
-        data.due_date = reminderData.reminderDate.toString() ;
+        data.amount = parseInt(reminderData.amount) ;
+        data.due_date = reminderData.reminderDate.toString();
+        data.payd = 0
       });
     });    
     Alert.alert('Lembre salvo com sucesso!')
@@ -151,7 +152,7 @@ export default function Contas() {
         body: title,
         android: {
           channelId: channelId,
-        },
+        },        
       },
       trigger,
     );
@@ -163,23 +164,25 @@ export default function Contas() {
           <Text style={styles.text}>Registre sua conta a pagar</Text>
           <Controller
             control={control}
-            rules={{required: true}}
+            rules={{
+              required: true,
+              maxLength: 50
+            }}
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput
-                style={styles.input}
-                // onBlur={onBlur}
+                style={styles.input}                
                 onChangeText={onChange}
                 value={value}
               />
             )}
             name="title"
           />
-          {errors.title && <Text>This is required</Text>}
+          {errors.title && <Text style={styles.textError} >O campo é obrigatório</Text> }          
           <Text style={styles.text}>Descrição (opcional)</Text>
           <Controller
             control={control}            
             rules={{
-              maxLength: 100,
+              maxLength: 80,
             }}
             render={({field: {onChange, onBlur, value}}) => (
               <TextInput                
@@ -191,6 +194,7 @@ export default function Contas() {
             )}
             name="description"
           />
+          {errors.description && <Text style={styles.textError} >O campo deve ter no máximo 80 caracteres</Text> }
           <Text style={styles.text}>Valor</Text>
           <Controller
             control={control}
@@ -299,4 +303,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'white',
   },
+  textError: {
+    color: 'red',
+    marginLeft: 35
+  }
 });

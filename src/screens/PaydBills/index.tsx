@@ -87,7 +87,7 @@ export default function PaydBills() {
                 </TouchableOpacity>
                 <Text style={styles.title}>{item.title}</Text>
                 <Text style={styles.description}>{item.description}</Text>
-                {/* <Text style={styles.description}>vencimento em: {item.due_date ? formatDate(item.due_date) : 'sem data cadastrada' } </Text> */}
+                <Text style={styles.amount} > R$ {item.amount}</Text>
               </View>
             </View>          
         </View>
@@ -113,6 +113,11 @@ export default function PaydBills() {
 }
 
 const styles = StyleSheet.create({
+  amount: {
+    color: 'black',
+    marginLeft: -3,
+    marginTop: 15    
+  },
   moreIcon: {    
     alignSelf: 'flex-end',
   },
@@ -134,7 +139,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     flexDirection: 'row',    
     // alignSelf: 'center',    
-    height: 145,
+    height: 160,
     justifyContent: 'center'
   },
   containerDate: {        
