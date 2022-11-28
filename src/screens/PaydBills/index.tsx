@@ -82,7 +82,7 @@ export default function PaydBills() {
                 </Text>
               </View>
               <View style={styles.containerContent}>
-                <TouchableOpacity activeOpacity={0.8} style={styles.moreIcon} onLongPress={() => removeReminder(item)}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.moreIcon} onPress={() => removeReminder(item)}>
                   <MaterialIcons name="more-vert" size={22} />
                 </TouchableOpacity>
                 <Text style={styles.title}>{item.title}</Text>
