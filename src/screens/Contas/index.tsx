@@ -36,7 +36,7 @@ export default function Contas() {
       title: '',
       description: '',
       amount: '',
-      reminderDate: Date.now(),
+      reminderDate: new Date((Date.now()) - 86400000 )
     },
   });
 
@@ -46,15 +46,8 @@ export default function Contas() {
 
   // }
 
-  async function handleReminderData(reminderData ) {
-    // reset({
-      //   title: '',
-      //   description: '',
-    //   amount: '',
-    //   reminderDate: Date.now()
-    
-    // })
-    console.log('REMINDER DATA ' + JSON.stringify(reminderData))
+  async function handleReminderData(reminderData ) {    
+    console.log('REMINDER DATA ' + JSON.stringify(reminderData))    
     await database.write(async () => {
       const response = await database
       .get<ReminderModel>('reminder')
@@ -100,41 +93,10 @@ export default function Contas() {
     ? selectedStartDate.format('YYYY-MM-DD').toString()
     : '';
 
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date() );
 
   const [title, setTitle] = useState([]);
-
-  // const saveReminder = async (reminderData) => {
-  //   console.log('reminder data ' +reminderData)
-  //   await database.write(async () => {
-  //     const response = await database
-  //       .get<ReminderModel>('reminder')
-  //       .create(data => {
-  //         data.title = reminderData.title;
-  //         data.description = reminderData.description;
-  //         data.amount = reminderData.amount;
-  //         data.reminder_date = reminderData.reminderDate;
-  //       });
-  //       const getCircularReplacer = () => {
-  //         const seen = new WeakSet();
-  //         return (key, value) => {
-  //           if (typeof value === "object" && value !== null) {
-  //             if (seen.has(value)) {
-  //               return;
-  //             }
-  //             seen.add(value);
-  //           }
-  //           return value;
-  //         };
-  //       };
-
-  //       console.log(JSON.stringify(response, getCircularReplacer()));
-  //   });
-  //   Alert.alert('Lembre salvo com sucesso!')
-  // };
-
-  // console.log('lembrete ' + JSON.stringify(reminderData));
-
+  
   async function marcarNotificacao(title: string) {
     const channelId = await notifee.createChannel({
       id: 'default',
@@ -221,9 +183,10 @@ export default function Contas() {
               render={({field: {onChange, onBlur, value}}) => (
                 <DatePicker
                   style={styles.datePicker}
-                  locale="pt"
+                  locale="pt-br"
                   date={date}
                   onDateChange={onChange}                  
+                  // minimumDate={new Date((Date.now()) + 86400000) }
                 />
               )}
               name="reminderDate"
@@ -234,25 +197,9 @@ export default function Contas() {
             style={styles.submitFormButton}
             onPress={               
               handleSubmit(handleReminderData)
-
-            
-              // saveReminder(reminderData);
             }>
             <Text style={styles.submitFormButtonText}> Salvar </Text>
-          </TouchableOpacity>
-          {/* <TouchableOpacity
-            style={styles.submitFormButton}
-            onPress={ async() => {
-              await getReminders()
-            } }>
-            <Text style={styles.submitFormButtonText}> Listar </Text>
-          </TouchableOpacity> */}
-
-          {/* <View style={styles.container} >            
-            <Button title='ver triggers' onPress={()=> notifee.getTriggerNotifications().then(ids => console.log('All trigger notifications: ', ids)) } />
-            <Button title='marcar notificacao' onPress={()=> marcarNotificacao(title) } />                    
-            <Button title="Cancel All Notifications" onPress={cancelAllNotifications} />
-          </View> */}
+          </TouchableOpacity>          
         </View>
       </ScrollView>
     </SafeAreaView>

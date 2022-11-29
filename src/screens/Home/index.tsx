@@ -69,8 +69,7 @@ export default function Home() {
   }
 
   function formatDate(date) {
-    const newDate = new Date(date);
-    // const result = date.
+    const newDate = new Date(date);    
     const day = newDate.getDay();
     const month = newDate.getMonth();
     const formatedDate = `${day}/${month}   `;
