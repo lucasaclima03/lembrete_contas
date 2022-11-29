@@ -87,8 +87,7 @@ export default function Home() {
   }
 
   function NearToDueDate() {
-    const renderItem = ({item}) => {
-      console.log(item)
+    const renderItem = ({item}) => {      
       return (
         <View style={styles.cardContainer}>
           <View style={styles.container}>
@@ -126,7 +125,7 @@ export default function Home() {
   return (
     <SafeAreaView>
       <View style={styles.containerList}>
-        <Text style={styles.nearToDueDateText}>Faturas</Text>
+        <Text style={styles.nearToDueDateText}>Faturas a vencer</Text>
         <NearToDueDate />        
       </View>
     </SafeAreaView>
@@ -237,9 +236,9 @@ const styles = StyleSheet.create({
   nearToDueDateText: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: 'black',
-    marginLeft: 10,
+    color: 'black',    
     marginTop: 10,
+    textAlign: 'center'
   },
   paydBillsText: {
     fontSize: 22,
